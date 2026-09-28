@@ -62,12 +62,16 @@ function removeSlides(presentation: Presentation, slideIds: string[]): Presentat
   const slides = presentation.slides.filter(
     (slide) => !slideIds.includes(slide.id),
   );
-  const activeSlideId =
-    presentation.activeSlideId && slideIds.includes(presentation.activeSlideId)
-      ? slides.length > 0
-        ? slides[0].id
-        : null
-      : presentation.activeSlideId;
+  
+  let activeSlideId: string | null = presentation.activeSlideId;
+
+  if (
+    presentation.activeSlideId !== null &&
+    slideIds.includes(presentation.activeSlideId)
+  ) {
+    activeSlideId = slides.length > 0 ? slides[0]!.id : null;
+  }
+
   return {
     ...presentation,
     slides,
@@ -84,13 +88,22 @@ function moveSlide(
   if (currentIndex === -1) {
     return presentation;
   }
+
   const clampedIndex = Math.max(
     0,
     Math.min(newIndex, presentation.slides.length - 1),
   );
+
   const slides = [...presentation.slides];
   const [moved] = slides.splice(currentIndex, 1);
+
+  // moved может быть undefined по типу — проверяем явно
+  if (moved === undefined) {
+    return presentation;
+  }
+
   slides.splice(clampedIndex, 0, moved);
+
   return {
     ...presentation,
     slides,
@@ -113,15 +126,24 @@ function duplicateSlide(presentation: Presentation, slideId: string): Presentati
   if (index === -1) {
     return presentation;
   }
+
   const original = presentation.slides[index];
+  // Явная проверка — устраняет ошибку "original is possibly 'undefined'"
+  if (original === undefined) {
+    return presentation;
+  }
+
+  // Явно пересобираем объект, чтобы не потерять background и не ругаться на union
   const copy: Slide = {
-    ...original,
     id: generateId(),
     name: `${original.name} (копия)`,
+    background: original.background,
     objects: original.objects.map((obj) => ({ ...obj, id: generateId() })),
   };
+
   const slides = [...presentation.slides];
   slides.splice(index + 1, 0, copy);
+
   return {
     ...presentation,
     slides,
