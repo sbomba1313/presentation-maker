@@ -13,4 +13,4 @@ type Slide = {
   objects: SlideObject[];
 };
 
-export { Slide, Background };
+export type { Slide, Background };
