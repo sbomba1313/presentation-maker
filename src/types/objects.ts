@@ -1,13 +1,26 @@
 type TextObject = {
-  front: string;
-  type: string;
-  size: number;
-  text: string;
-}
+  id: string;
+  type: 'text';
+  content: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fontFamily: string;
+  fontSize: number;
+  fontColor: string;
+};
 
 type ImageObject = {
-  way: string;
-  size: number;
-}
+  id: string;
+  type: 'image';
+  imageUrl: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
-export type {TextObject, ImageObject};
+type SlideObject = TextObject | ImageObject;
+
+export { TextObject, ImageObject, SlideObject };

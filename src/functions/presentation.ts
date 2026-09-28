@@ -1,13 +1,12 @@
-import type { Presentation } from '.././types/presentation';
-import type { Slide, Background } from '.././types/slide';
+import type { Presentation } from '../types/presentation.js';
+import type { Slide } from '../types/slide.js';
 
-//рандомит айди
 function generateId(): string {
   const timestamp = Date.now().toString(36);
   const randomPart = Math.random().toString(36).substring(2, 8);
   return `${timestamp}-${randomPart}`;
 }
-//создает дефолтный слайд
+
 function createDefaultSlide(): Slide {
   return {
     id: generateId(),
@@ -16,7 +15,7 @@ function createDefaultSlide(): Slide {
     objects: [],
   };
 }
-//создать презентацию
+
 function createPresentation(name: string): Presentation {
   const defaultSlide = createDefaultSlide();
   return {
@@ -26,18 +25,18 @@ function createPresentation(name: string): Presentation {
     activeSlideId: defaultSlide.id,
   };
 }
-//новое имя презентации
+
 function updatePresentationName(presentation: Presentation, name: string): Presentation {
   return {
     ...presentation,
     name,
   };
 }
-//сохранить презентацию
+
 function savePresentation(presentation: Presentation): string {
   return JSON.stringify(presentation, null, 2);
 }
-//загрузить презентацию
+
 function loadPresentation(json: string): Presentation {
   return JSON.parse(json) as Presentation;
 }
